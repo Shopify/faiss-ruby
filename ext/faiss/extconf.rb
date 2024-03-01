@@ -1,6 +1,8 @@
 require "mkmf-rice"
 require "numo/narray"
 
+$CXXFLAGS << " -Wall -Wno-unused-parameter -Wno-unused-function -Wno-unused-variable -Wno-deprecated-declarations"
+
 # libomp changed to keg-only
 # https://github.com/Homebrew/homebrew-core/issues/112107
 if RbConfig::CONFIG["host_os"] =~ /darwin/i
