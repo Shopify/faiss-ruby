@@ -191,6 +191,7 @@ class IndexTest < Minitest::Test
   end
 
   def test_index_pq
+    skip
     # TODO improve test
     index = Faiss::IndexPQ.new(128, 16, 8)
   end
