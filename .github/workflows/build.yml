@@ -21,5 +21,6 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
+      - run: sudo apt-get update && sudo apt-get install valgrind
       - run: MAKE="make -j$(nproc)" bundle exec rake compile
       - run: bundle exec rake test
