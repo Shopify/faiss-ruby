@@ -191,7 +191,7 @@ class IndexTest < Minitest::Test
   end
 
   def test_index_pq
-    skip
+    # skip
     # TODO improve test
     index = Faiss::IndexPQ.new(128, 16, 8)
   end
@@ -203,14 +203,14 @@ class IndexTest < Minitest::Test
   end
 
   def test_index_ivfpq
-    skip
+    # skip
     # TODO improve test
     quantizer = Faiss::IndexPQ.new(128, 16, 8)
     index = Faiss::IndexIVFPQ.new(quantizer, 128, 2, 16, 8)
   end
 
   def test_index_ivfpqr
-    skip
+    # skip
     # TODO improve test
     quantizer = Faiss::IndexPQ.new(128, 16, 8)
     index = Faiss::IndexIVFPQR.new(quantizer, 128, 2, 16, 8, 2, 2)

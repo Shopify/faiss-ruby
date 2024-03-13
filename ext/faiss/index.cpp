@@ -178,7 +178,7 @@ void init_index(Rice::Module& m) {
     .define_constructor(Rice::Constructor<faiss::IndexScalarQuantizer, int, faiss::ScalarQuantizer::QuantizerType>());
 
   Rice::define_class_under<faiss::IndexPQ, faiss::Index>(m, "IndexPQ")
-    .define_constructor(Rice::Constructor<faiss::IndexPQ, int, size_t, size_t>());
+    .define_constructor(Rice::Constructor<faiss::IndexPQ, int, size_t, size_t, faiss::MetricType>(), Rice::Arg("d"), Rice::Arg("M"), Rice::Arg("nbits"), Rice::Arg("metric") = faiss::METRIC_L2);
 
   Rice::define_class_under<faiss::IndexIVFScalarQuantizer, faiss::Index>(m, "IndexIVFScalarQuantizer")
     .define_constructor(Rice::Constructor<faiss::IndexIVFScalarQuantizer, faiss::Index*, size_t, size_t, faiss::ScalarQuantizer::QuantizerType>());
