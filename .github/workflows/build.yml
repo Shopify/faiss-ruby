@@ -23,4 +23,4 @@ jobs:
           bundler-cache: true
       - run: sudo apt-get update && sudo apt-get install valgrind
       - run: MAKE="make -j$(nproc)" bundle exec rake compile
-      - run: bundle exec rake test
+      - run: bundle exec rake test:valgrind
