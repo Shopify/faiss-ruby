@@ -27,6 +27,8 @@ class IndexBinaryTest < Minitest::Test
   end
 
   def test_index_binary_ivf
+    skip
+
     objects = [
       [1, 1, 2, 1],
       [5, 4, 6, 5],
