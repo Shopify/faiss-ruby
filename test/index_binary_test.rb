@@ -1,11 +1,13 @@
 require_relative "test_helper"
 
 class IndexBinaryTest < Minitest::Test
-  def setup
-    skip
-  end
+  # def setup
+  #   skip
+  # end
 
   def test_index_binary_flat
+    skip
+
     objects = [
       [1, 1, 2, 1],
       [5, 4, 6, 5],
