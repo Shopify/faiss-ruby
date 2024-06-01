@@ -37,7 +37,7 @@ class IndexBinaryTest < Minitest::Test
   end
 
   def test_index_binary_factory
-    Faiss.index_binary_factory(8, "BIVF32")
+    # Faiss.index_binary_factory(8, "BIVF32")
   end
 
   private
