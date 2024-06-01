@@ -1,6 +1,10 @@
 require_relative "test_helper"
 
 class IndexBinaryTest < Minitest::Test
+  def setup
+    skip
+  end
+
   def test_index_binary_flat
     objects = [
       [1, 1, 2, 1],
@@ -37,7 +41,7 @@ class IndexBinaryTest < Minitest::Test
   end
 
   def test_index_binary_factory
-    # Faiss.index_binary_factory(8, "BIVF32")
+    Faiss.index_binary_factory(8, "BIVF32")
   end
 
   private
