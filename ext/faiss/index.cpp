@@ -10,6 +10,7 @@
 #include <faiss/IndexIVFPQR.h>
 #include <faiss/index_io.h>
 #include <faiss/AutoTune.h>
+#include <ruby/thread.h>
 
 #include "utils.h"
 
@@ -136,6 +137,7 @@ void init_index(Rice::Module& m) {
         auto distances = numo::SFloat({n, k});
         auto labels = numo::Int64({n, k});
 
+        // rb_thread_call_without_gvl(...)
         self.search(n, objects.read_ptr(), k, distances.write_ptr(), labels.write_ptr());
 
         Rice::Array ret;
