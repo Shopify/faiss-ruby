@@ -174,7 +174,7 @@ void init_index(Rice::Module& m) {
           .labels = labels.write_ptr(),
         };
 
-        rb_thread_call_without_gvl(index_search_func, &args, RUBY_UBF_IO, NULL);
+        rb_thread_call_without_gvl(index_search_func, &args, RUBY_UBF_PROCESS, NULL);
         // self.search(n, objects.read_ptr(), k, distances.write_ptr(), labels.write_ptr());
 
         Rice::Array ret;
