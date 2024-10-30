@@ -26,10 +26,13 @@ class ThreadBenchmark < Minitest::Test
 
     puts "Time taken: #{time} seconds"
 
+    queue = Thread::Queue.new
+    pool = 50.times.map { Thread.new { queue.pop; index.search(xq, k) } }
+
     time = measure {
-      (0...50).map do
-        Thread.new { index.search(xq, k) }
-      end.map(&:join)
+      pool.each do
+        queue << nil
+      end.each(&:join)
     }
 
     puts "Time taken with threads: #{time} seconds"
