@@ -20,6 +20,10 @@ class ThreadBenchmark < Minitest::Test
     reps = 100 # number of repetitions
     pool_size = 2 # number of threads
 
+    puts "#{reps} repetitions"
+
+    puts "Running single-threaded search..."
+
     time = measure {
       reps.times do
         index.search(xq, k) # search for the nearest neighbors
@@ -31,13 +35,22 @@ class ThreadBenchmark < Minitest::Test
     queue = Thread::Queue.new
     pool = pool_size.times.map {
       Thread.new {
+        wake_count = 0
+
         loop {
           args = queue.pop
           break if args == :end
+          wake_count += 1
           index.search(xq, k)
         }
+
+        wake_count
       }
     }
+
+    wake_counts = nil
+
+    puts "Running multi-threaded search with #{pool_size} threads..."
 
     time = measure {
       reps.times do
@@ -45,12 +58,14 @@ class ThreadBenchmark < Minitest::Test
       end
 
       # Release the threads
-      pool.each do
-        queue << :end
-      end.each(&:join)
+      pool.each { queue << :end }
+
+      # Collect the wake counts
+      wake_counts = pool.map(&:value)
     }
 
     puts "Time taken with threads: #{time} seconds"
+    puts "Wake counts: #{wake_counts.inspect}"
   end
 
   private
