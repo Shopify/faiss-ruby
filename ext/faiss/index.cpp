@@ -10,6 +10,7 @@
 #include <faiss/IndexIVFPQR.h>
 #include <faiss/index_io.h>
 #include <faiss/AutoTune.h>
+#include <ruby.h>
 #include <ruby/thread.h>
 
 #include "utils.h"
@@ -91,6 +92,33 @@ namespace Rice::detail {
   };
 }
 
+
+/** query n vectors of dimension d to the index.
+ *
+ * return at most k vectors. If there are not enough results for a
+ * query, the result array is padded with -1s.
+ *
+ * @param n           number of vectors
+ * @param x           input vectors to search, size n * d
+ * @param k           number of extracted vectors
+ * @param distances   output pairwise distances, size n*k
+ * @param labels      output labels of the NNs, size n*k
+ */
+struct index_search_args {
+  faiss::Index *index;
+  size_t n;
+  const float* x;
+  size_t k;
+  float* distances;
+  long long* labels;
+};
+
+void *index_search_func(void *ptr) {
+  auto args = (index_search_args *)ptr;
+  args->index->search(args->n, args->x, args->k, args->distances, args->labels);
+  return NULL;
+}
+
 void init_index(Rice::Module& m) {
   Rice::define_class_under<faiss::Index>(m, "Index")
     .define_method(
@@ -137,8 +165,17 @@ void init_index(Rice::Module& m) {
         auto distances = numo::SFloat({n, k});
         auto labels = numo::Int64({n, k});
 
-        // rb_thread_call_without_gvl(...)
-        self.search(n, objects.read_ptr(), k, distances.write_ptr(), labels.write_ptr());
+        index_search_args args = {
+          .index = &self,
+          .n = n,
+          .x = objects.read_ptr(),
+          .k = k,
+          .distances = distances.write_ptr(),
+          .labels = labels.write_ptr(),
+        };
+
+        rb_thread_call_without_gvl(index_search_func, &args, RUBY_UBF_IO, NULL);
+        // self.search(n, objects.read_ptr(), k, distances.write_ptr(), labels.write_ptr());
 
         Rice::Array ret;
         ret.push(distances);
