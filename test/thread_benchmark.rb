@@ -6,7 +6,7 @@ class ThreadBenchmark < Minitest::Test
 
     d = 3072 # dimensions
     nb = 100000 # number of vectors in the database
-    nq = 10000 # number of queries
+    nq = 10 # number of queries
     xb = Numo::SFloat.new(nb, d).rand # database vectors
     xb[true, 0] += Numo::Int64.new(nb).seq / 1000.0 # add a sequence to the first dimension
     xq = Numo::SFloat.new(nq, d).rand # query vectors
@@ -18,9 +18,21 @@ class ThreadBenchmark < Minitest::Test
 
     k = 4 # number of nearest neighbors to search for
 
-    time = measure { index.search(xq, k) } # search for the nearest neighbors
+    time = measure {
+      50.times do
+        index.search(xq, k) # search for the nearest neighbors
+      end
+    }
 
     puts "Time taken: #{time} seconds"
+
+    time = measure {
+      (0...50).map do
+        Thread.new { index.search(xq, k) }
+      end.map(&:join)
+    }
+
+    puts "Time taken with threads: #{time} seconds"
   end
 
   private
