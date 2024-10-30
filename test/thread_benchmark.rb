@@ -27,7 +27,13 @@ class ThreadBenchmark < Minitest::Test
     puts "Time taken: #{time} seconds"
 
     queue = Thread::Queue.new
-    pool = 50.times.map { Thread.new { queue.pop; index.search(xq, k) } }
+    pool = nil
+
+    time = measure {
+      pool = 50.times.map { Thread.new { queue.pop; index.search(xq, k) } }
+    }
+
+    puts "Time taken to create threads: #{time} seconds"
 
     time = measure {
       pool.each do
